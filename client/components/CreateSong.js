@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { mutations } from 'apollo-client/mutations/store';
 
 class AddSong extends Component {
   constructor(props) {
@@ -9,11 +10,20 @@ class AddSong extends Component {
       title: ''
     };
   }
+
+  onSubmit(e) {
+    e.preventDefault();
+    this.props.mutate({
+      variables: {
+        title: this.state.title
+      }
+    });
+  }
   render() {
     return (
       <div>
         <h3>Add song</h3>
-        <form>
+        <form onSubmit={this.onSubmit.bind(this)}>
           <label htmlFor="">Song title: </label>
           <input
             type="text"
@@ -28,10 +38,13 @@ class AddSong extends Component {
   }
 }
 
-// const mutation = gql`
-// {
+const mutation = gql`
+  mutation AddSong($title: String) {
+    addSong(title: $title) {
+      id
+      title
+    }
+  }
+`;
 
-// }
-// `;
-
-export default AddSong;
+export default graphql(mutation)(AddSong);
