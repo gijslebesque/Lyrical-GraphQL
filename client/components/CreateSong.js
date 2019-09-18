@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { mutations } from 'apollo-client/mutations/store';
+import { Link } from 'react-router-dom';
+import query from '../queries/fetchSongs';
 
 class AddSong extends Component {
   constructor(props) {
@@ -13,15 +14,21 @@ class AddSong extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    this.props.mutate({
-      variables: {
-        title: this.state.title
-      }
-    });
+    this.props
+      .mutate({
+        variables: {
+          title: this.state.title
+        },
+        refetchQueries: [{ query }]
+      })
+      .then(() => {
+        this.props.history.push('/');
+      });
   }
   render() {
     return (
       <div>
+        <Link to="/">Back</Link>
         <h3>Add song</h3>
         <form onSubmit={this.onSubmit.bind(this)}>
           <label htmlFor="">Song title: </label>
