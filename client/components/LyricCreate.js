@@ -1,18 +1,50 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { Link } from 'react-router-dom';
-import query from '../queries/fetchSongs';
 import gql from 'graphql-tag';
 
 class LyricCreate extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { content: '' };
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+    this.props.mutate({
+      variables: {
+        content: this.state.content,
+        songId: this.props.id
+      }
+    });
+    this.setState({ content: '' });
+  }
   render() {
     return (
-      <form>
+      <form onSubmit={this.onSubmit.bind(this)}>
         <label>Add a lyric</label>
-        <input type="text" name="lyric" />
+        <input
+          type="text"
+          value={this.state.content}
+          onChange={e => {
+            this.setState({ content: e.target.value });
+          }}
+        />
       </form>
     );
   }
 }
 
-export default graphql(mutation)(graphql(query)(LyricCreate));
+const mutation = gql`
+  mutation AddLyricToSong($content: String, $songId: ID) {
+    addLyricToSong(content: $content, songId: $songId) {
+      id
+      title
+      lyrics {
+        id
+        content
+      }
+    }
+  }
+`;
+
+export default graphql(mutation)(LyricCreate);
