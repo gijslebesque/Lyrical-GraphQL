@@ -5,6 +5,8 @@ import { ApolloProvider } from 'react-apollo';
 import SongList from './components/SongList';
 import { Route, HashRouter } from 'react-router-dom';
 import CreateSong from './components/CreateSong';
+import './style/style.css';
+
 //client is the Apollo store
 const client = new ApolloClient({});
 
